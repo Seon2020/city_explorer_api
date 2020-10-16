@@ -27,14 +27,14 @@ app.get('/location', (request, response) => {
   response.send(location);
 });
 
-// Restaurant Route
+// Weather Route
 app.get('/weather', (request, response) => {
   let forecast = require('./data/weather.json');
   let weatherArr = [];
   forecast.data.forEach(value => {
     weatherArr.push(new Weather(value));
   });
-  response.send(WeatherArr)
+  response.send(WeatherArr);
 });
 
 
