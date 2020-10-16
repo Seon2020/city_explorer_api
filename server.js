@@ -18,6 +18,7 @@ const app = express();
 // use CORS
 app.use(cors());
 
+//Location Route 
 app.get('/location', (request, response) => {
   let city = request.query.city;
   //Get data from source
@@ -26,11 +27,30 @@ app.get('/location', (request, response) => {
   response.send(location);
 });
 
+// Restaurant Route
+app.get('/weather', (request, response) => {
+  let forecast = require('./data/weather.json');
+  let weatherArr = [];
+  forecast.data.forEach(value => {
+    weatherArr.push(new Weather(value));
+  });
+  response.send(WeatherArr)
+});
+
+
+
+// Location Constructor 
 function Location(obj, query) {
   this.latitude = obj.lat;
   this.longitude = obj.lon;
   this.search_query = query;
   this.formatted_query = obj.display_name;
+}
+
+// Weather Constructor 
+function Weather(obj) {
+  this.forecast = obj.weather.description;
+  this.time = new Date(obj.valid_date).toDateString();
 }
 
 // Start server
