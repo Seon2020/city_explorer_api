@@ -28,7 +28,7 @@ This application is designed for users to enter a city name in the input field t
 **Estimate of time needed to complete:** 45m  
 **Start time:** 7:15pm  
 **Finish time:** 8:15pm  
-**Actual time needed to complete:** 1H 
+**Actual time needed to complete:** 1H  
 10-15-2020 8:15pm - Server now talking to front end and displaying location data.  
 
 **Feature #3**  
