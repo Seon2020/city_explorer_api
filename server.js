@@ -34,7 +34,7 @@ app.get('/weather', (request, response) => {
   forecast.data.forEach(value => {
     weatherArr.push(new Weather(value));
   });
-  response.send(WeatherArr);
+  response.send(weatherArr);
 });
 
 
