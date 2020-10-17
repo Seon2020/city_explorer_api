@@ -8,6 +8,7 @@ require('dotenv').config();
 // App dependencies 
 const express = require('express');
 const cors = require('cors');
+const superagent = require('superagent');
 
 // App setup 
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,9 @@ const app = express();
 
 // use CORS
 app.use(cors());
+
+// Any route that is not /location will run the function
+app.use("*", noHandlerFound);
 
 //Location Route 
 app.get('/location', (request, response) => {
@@ -35,11 +39,8 @@ app.get('/location', (request, response) => {
 // Weather Route
 app.get('/weather', (request, response) => {
   try {
-  let forecast = require('./data/weather.json');
-  let weatherArr = [];
-  forecast.data.forEach(value => {
-    weatherArr.push(new Weather(value));
-  });
+  const forecast = require('./data/weather.json').data;
+  let weatherArr = forecast.map(value => new Weather(value));
   response.send(weatherArr);
 }
   catch (error) {
@@ -67,6 +68,10 @@ function Weather(obj) {
 function handleError(){
 return response.status(500).send("Sorry, something went wrong");
 };
+
+function noHandlerFound(req, res) {
+  res.status(404).send('Not Found');
+}
 
 // Start server
 app.listen(PORT, () => {
