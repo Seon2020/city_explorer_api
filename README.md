@@ -41,10 +41,12 @@ This application is designed for users to enter a city name in the input field t
 
 **Feature #4**  
 **Number and name of feature:** #4 - Errors  
-**Estimate of time needed to complete:** N/A  
-**Start time:** N/A  
-**Finish time:** N/A  
-**Actual time needed to complete:** N/A  
+**Estimate of time needed to complete:** 30m  
+**Start time:** 12:00pm  
+**Finish time:** 12:20pm  
+**Actual time needed to complete:** 20m  
+10-17-2020 8:15pm - Error message 500 now displays when invalid location is entered.  
+
 
 ## Credits and Collaborations 
 - Referenced the [301 Class 6 Demo](https://github.com/codefellows/seattle-301n19/blob/master/class-06/demo/server/server.js) for the Error feature. 
