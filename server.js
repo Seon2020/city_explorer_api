@@ -1,14 +1,12 @@
-const { strict } = require("assert")
-
-'use strict'; 
-
-// Load environment variables from .env
-require('dotenv').config();
+'use strict';
 
 // App dependencies 
 const express = require('express');
 const cors = require('cors');
 const superagent = require('superagent');
+
+// Load environment variables from .env
+require('dotenv').config();
 
 // App setup 
 const PORT = process.env.PORT || 3000;
@@ -23,18 +21,20 @@ app.use(cors());
 app.use("*", noHandlerFound);
 
 //Location Route 
-app.get('/location', (request, response) => {
-  try {
+app.get('/location', (request,response) => {
   let city = request.query.city;
-  //Get data from source
-  let data = require('./data/location.json')[0];
-  let location = new Location(data, city);
-  response.send(location);
-  } 
-    catch (error) {
-      handleError();
-    }
-});
+  //reference key in env file
+  let key = process.env.LOCATIONIQ_API_KEY;
+  const URL = `https://us1.locationiq.com/v1/search.php/?key=${key}&q=${city}&format=json`;
+  superagent.get(URL)
+    .then(data => {
+      let location = new Location(data.body[0], city);
+      response.status(200).json(location);
+    })
+    .catch((error) => {
+      errorHandler();
+    })
+};
 
 // Weather Route
 app.get('/weather', (request, response) => {
@@ -56,22 +56,22 @@ function Location(obj, query) {
   this.longitude = obj.lon;
   this.search_query = query;
   this.formatted_query = obj.display_name;
-}
+};
 
 // Weather Constructor 
 function Weather(obj) {
   this.forecast = obj.weather.description;
   this.time = new Date(obj.valid_date).toDateString();
-}
+};
 
 //Error function
-function handleError(){
-return response.status(500).send("Sorry, something went wrong");
+function handleError(req, res){
+  res.status(500).send("Sorry, something went wrong");
 };
 
 function noHandlerFound(req, res) {
   res.status(404).send('Not Found');
-}
+};
 
 // Start server
 app.listen(PORT, () => {
