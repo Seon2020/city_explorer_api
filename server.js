@@ -17,9 +17,6 @@ const app = express();
 // use CORS
 app.use(cors());
 
-// Any route that is not /location will run the function
-app.use("*", noHandlerFound);
-
 //Location Route 
 app.get('/location', (request,response) => {
   let city = request.query.city;
@@ -34,7 +31,7 @@ app.get('/location', (request,response) => {
     .catch((error) => {
       errorHandler();
     })
-};
+});
 
 // Weather Route
 app.get('/weather', (request, response) => {
@@ -48,7 +45,8 @@ app.get('/weather', (request, response) => {
   }
 });
 
-
+// Any route that is not /location will run the function
+app.use("*", noHandlerFound);
 
 // Location Constructor 
 function Location(obj, query) {
