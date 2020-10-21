@@ -28,23 +28,31 @@ app.get('/location', (request, response) => {
       let location = new Location(data.body[0], city);
       response.status(200).json(location);
     })
-    .catch((error) => {
+    .catch(error => {
       errorHandler();
-    })
+    });
 })
 
 
 // Weather Route
 app.get('/weather', (request, response) => {
-  try {
-  const forecast = require('./data/weather.json').data;
-  let weatherArr = forecast.map(value => new Weather(value));
-  response.send(weatherArr);
-}
-  catch (error) {
-    handleError();
-  }
-});
+  let key = process.env.WEATHER_API_KEY;
+  let lat = request.query.latitude;
+  let lon = request.query.longitude;
+
+  const URL = `https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${key}`;
+  
+  superagent.get(URL)
+    .then(data => {
+      let weather = data.body.data.map(val => {
+        return new Weather(val);
+      });
+      response.status(200).json(weather);
+    })
+    .catch (error => {
+      handleError();
+    });
+})
 
 // Any route that is not /location will run the function
 app.use("*", noHandlerFound);
