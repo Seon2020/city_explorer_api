@@ -33,6 +33,7 @@ app.get('/location', (request, response) => {
     })
 })
 
+
 // Weather Route
 app.get('/weather', (request, response) => {
   try {
