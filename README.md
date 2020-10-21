@@ -47,6 +47,40 @@ This application is designed for users to enter a city name in the input field t
 **Actual time needed to complete:** 20m  
 10-17-2020 8:15pm - Error message 500 now displays when invalid location is entered.  
 
+**Lab 7**  
+
+**Feature #1**  
+**Number and name of feature:** #1 - Data Formatting  
+**Estimate of time needed to complete:** 30m  
+**Start time:** 6:30pm  
+**Finish time:** 7:15pm  
+**Actual time needed to complete:** 45m  
+10-17-2020 7:15pm - Data formatting complete       
+  
+**Feature #2**  
+**Number and name of feature:** #2 - Locations  
+**Estimate of time needed to complete:** 45m  
+**Start time:** 7:15pm  
+**Finish time:** 8:15pm  
+**Actual time needed to complete:** 1H  
+10-17-2020 8:15pm - Location API request complete  
+
+**Feature #3**  
+**Number and name of feature:** #3 - Weather     
+**Estimate of time needed to complete:** 45m  
+**Start time:** 8:15pm  
+**Finish time:** 9:15pm  
+**Actual time needed to complete:** 1H  
+10-20-2020 9:15pm - Weather data API request complete  
+
+**Feature #4**  
+**Number and name of feature:** #4 - Trails  
+**Estimate of time needed to complete:** 30m  
+**Start time:** 9:15pm  
+**Finish time:** 9:45pm  
+**Actual time needed to complete:** 30m  
+10-20-2020 9:45pm - Trails API request complete   
 
 ## Credits and Collaborations 
 - Referenced the [301 Class 6 Demo](https://github.com/codefellows/seattle-301n19/blob/master/class-06/demo/server/server.js) for the Error feature. 
+- Lab partner: Scott Falbo
