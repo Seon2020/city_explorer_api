@@ -31,7 +31,7 @@ app.get('/location', (request, response) => {
     .catch((error) => {
       errorHandler();
     })
-})
+});
 
 // Weather Route
 app.get('/weather', (request, response) => {
