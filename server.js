@@ -54,6 +54,26 @@ app.get('/weather', (request, response) => {
     });
 })
 
+// Trails Route
+app.get('/trails', (request, response) => {
+  let key = process.env.TRAIL_API_KEY;
+  let lat = request.query.longitude;
+  let lon = request.query.latitude;
+
+  const URL = `https://www.hikingproject.com/data/get-trails?lat=${lat}&lon=${lon}&maxDistance=10&key=${key}`;
+
+  superagent.get(URL)
+    .then(data => {
+      let trail = data.body.trails.map(val => {
+        return new Trail(val);
+      });
+      response.status(200).json(trail);
+    })
+    .catch(error => {
+      handleError();
+    });
+})
+
 // Any route that is not /location will run the function
 app.use("*", noHandlerFound);
 
@@ -63,13 +83,27 @@ function Location(obj, query) {
   this.longitude = obj.lon;
   this.search_query = query;
   this.formatted_query = obj.display_name;
-};
+}
 
 // Weather Constructor 
 function Weather(obj) {
   this.forecast = obj.weather.description;
   this.time = new Date(obj.valid_date).toDateString();
-};
+}
+
+// Trail Constructor 
+function Trail(obj) {
+  this.name = obj.name;
+  this.location = obj.location;
+  this.length = obj.length;
+  this.stars = obj.stars;
+  this.star_votes = obj.starVotes;
+  this.summary = obj.summary;
+  this.trail_url = obj.url;
+  this.conditions = obj.conditionStatus;
+  this.condition_date = obj.conditionDate.slice(0,10);
+  this.condition_time = obj.conditionDate.slice(11,20);
+}
 
 //Error function
 function handleError(req, res){
