@@ -26,10 +26,10 @@ app.get('/location', (request, response) => {
   superagent.get(URL)
     .then(data => {
       let location = new Location(data.body[0], city);
-      response.status(200).json(location);
+      response.status(200).send(location);
     })
     .catch(error => {
-      errorHandler();
+      handleError();
     });
 })
 
@@ -47,7 +47,7 @@ app.get('/weather', (request, response) => {
       let weather = data.body.data.map(val => {
         return new Weather(val);
       });
-      response.status(200).json(weather);
+      response.status(200).send(weather);
     })
     .catch (error => {
       handleError();
@@ -57,8 +57,8 @@ app.get('/weather', (request, response) => {
 // Trails Route
 app.get('/trails', (request, response) => {
   let key = process.env.TRAIL_API_KEY;
-  let lat = request.query.longitude;
-  let lon = request.query.latitude;
+  let lat = request.query.latitude;
+  let lon = request.query.longitude;
 
   const URL = `https://www.hikingproject.com/data/get-trails?lat=${lat}&lon=${lon}&maxDistance=10&key=${key}`;
 
@@ -67,7 +67,7 @@ app.get('/trails', (request, response) => {
       let trail = data.body.trails.map(val => {
         return new Trail(val);
       });
-      response.status(200).json(trail);
+      response.status(200).send(trail);
     })
     .catch(error => {
       handleError();
