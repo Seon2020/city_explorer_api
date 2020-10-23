@@ -4,9 +4,14 @@
 const express = require('express');
 const cors = require('cors');
 const superagent = require('superagent');
+const pg = require('pg');
 
 // Load environment variables from .env
 require('dotenv').config();
+
+//add postgres client 
+const client = new pg.Client(process.env.DATABASE_URL);
+client.connect();
 
 // App setup 
 const PORT = process.env.PORT || 3000;
@@ -32,7 +37,6 @@ app.get('/location', (request, response) => {
       handleError();
     });
 })
-
 
 // Weather Route
 app.get('/weather', (request, response) => {
