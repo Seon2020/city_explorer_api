@@ -28,26 +28,35 @@ app.get('/location', (request, response) => {
   let key = process.env.GEOCODE_API_KEY;
   //Check to see if result was cached previously
   const sqlQuery = `SELECT * FROM location WHERE search_query=$1`;
-  let safeVal = [city];
-
-  client.query(sqlQuery, safeVal)
+  // query with cached result and city instance as params (brackets to indicate row)
+  client.query(sqlQuery, [city])
+  // then pass the output in the .then
     .then(output => {
+  // If that row exists (AKA returns true)
       if (output.rowCount) {
-        //used the cached data
+  //used the cached data
         response.status(200).send(output.rows[0]);
-        //else use locationiq data
+  //else use locationiq data
       } else {
+  //define the URL to retrieve data
         const URL = `https://us1.locationiq.com/v1/search.php/?key=${key}&q=${city}&format=json`;
+  // superagent call passing in URL as param
         superagent.get(URL)
+  // pass data in the .then statement
           .then(data => {
+  //create new location object with the data and store in variable
             let location = new Location(data.body[0], city);
+  // Code to insert values into the location table for next time
             const insertSql = `INSERT INTO location (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4)`;
+  // Create parametrized queries with SQL code and new location object results as params          
             client.query(insertSql, [location.search_query, location.formatted_query, location.latitude, location.longitude])
+  // Then send results to client side
               .then(results =>
                 response.status(200).send(location));
           });
       };
     })
+  // call handleError function if necessary 
     .catch(error => {
       handleError(request, response, error);
 })})
