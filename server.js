@@ -11,7 +11,6 @@ require('dotenv').config();
 
 //add postgres client 
 const client = new pg.Client(process.env.DATABASE_URL);
-client.connect();
 
 // App setup 
 const PORT = process.env.PORT || 3000;
@@ -27,16 +26,31 @@ app.get('/location', (request, response) => {
   let city = request.query.city;
   //reference key in env file
   let key = process.env.GEOCODE_API_KEY;
-  const URL = `https://us1.locationiq.com/v1/search.php/?key=${key}&q=${city}&format=json`;
-  superagent.get(URL)
-    .then(data => {
-      let location = new Location(data.body[0], city);
-      response.status(200).send(location);
+  //Check to see if result was cached previously
+  const sqlQuery = `SELECT * FROM location WHERE search_query=$1`;
+  let safeVal = [city];
+
+  client.query(sqlQuery, safeVal)
+    .then(output => {
+      if (output.rowCount) {
+        //used the cached data
+        response.status(200).send(output.rows[0]);
+        //else use locationiq data
+      } else {
+        const URL = `https://us1.locationiq.com/v1/search.php/?key=${key}&q=${city}&format=json`;
+        superagent.get(URL)
+          .then(data => {
+            let location = new Location(data.body[0], city);
+            const insertSql = `INSERT INTO location (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4)`;
+            client.query(insertSql, [location.search_query, location.formatted_query, location.latitude, location.longitude])
+              .then(results =>
+                response.status(200).send(location));
+          });
+      };
     })
     .catch(error => {
-      handleError();
-    });
-})
+      handleError(request, response, error);
+})})
 
 // Weather Route
 app.get('/weather', (request, response) => {
@@ -110,7 +124,7 @@ function Trail(obj) {
 }
 
 //Error function
-function handleError(req, res){
+function handleError(req, res, error) {
   res.status(500).send("Sorry, something went wrong");
 };
 
@@ -118,7 +132,13 @@ function noHandlerFound(req, res) {
   res.status(404).send('Not Found');
 };
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`server is now listening on port ${PORT}`);
-});
+// Connect to database and start server
+client.connect()
+  .then( () => {
+    app.listen(PORT, () => {
+        console.log(`server is now listening on port ${PORT}`);
+    });
+  })
+  .catch(error => {
+    console.log('ERROR', error);
+  });
