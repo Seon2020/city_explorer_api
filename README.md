@@ -81,6 +81,33 @@ This application is designed for users to enter a city name in the input field t
 **Actual time needed to complete:** 30m  
 10-20-2020 9:45pm - Trails API request complete   
 
+**Lab 8**
+
+**Feature #1**  
+**Number and name of feature:** #4 - Database  
+**Estimate of time needed to complete:** 30m  
+**Start time:** 5pm    
+**Finish time:** 5:30pm    
+**Actual time needed to complete:** 30m   
+10-23-2020 5:30pm - Database created  
+
+**Feature #2**  
+**Number and name of feature:** #4 - Server  
+**Estimate of time needed to complete:** 30m  
+**Start time:** 5:30pm    
+**Finish time:** 6:30pm  
+**Actual time needed to complete:** 1H   
+10-23-2020 6:30pm - Server set up  
+
+**Feature #3**  
+**Number and name of feature:** #4 - Deploy  
+**Estimate of time needed to complete:** 30m     
+**Start time:** 6:30pm  
+**Finish time:** 7pm  
+**Actual time needed to complete:** 30m  
+10-23-2020 7pm - Properly deployed on Heroku  
+
+
 ## Credits and Collaborations 
 - Referenced the [301 Class 6 Demo](https://github.com/codefellows/seattle-301n19/blob/master/class-06/demo/server/server.js) for the Error feature. 
 - Lab partner: Scott Falbo
