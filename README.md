@@ -107,7 +107,34 @@ This application is designed for users to enter a city name in the input field t
 **Actual time needed to complete:** 30m  
 10-23-2020 7pm - Properly deployed on Heroku  
 
+**Lab 9**  
+
+**Feature #1**  
+**Number and name of feature:** #4 - Movies    
+**Estimate of time needed to complete:** 1H    
+**Start time:** 3pm   
+**Finish time:** 5pm        
+**Actual time needed to complete:** 2H     
+10-24-2020 5pm - Movies now appearing in searches  
+
+**Feature #2**  
+**Number and name of feature:** #4 - Yelp   
+**Estimate of time needed to complete:** 1H    
+**Start time:** 5pm      
+**Finish time:** 7pm  
+**Actual time needed to complete:** 2H  
+10-24-2020 7pm - Yelp data now displaying    
+
+**Feature #3**  
+**Number and name of feature:** #4 - Pagination  
+**Estimate of time needed to complete:** 1H       
+**Start time:** 7pm   
+**Finish time:** 8pm  
+**Actual time needed to complete:** 1H    
+10-24-2020 8pm - Now showing 5 per page added  
+
 
 ## Credits and Collaborations 
 - Referenced the [301 Class 6 Demo](https://github.com/codefellows/seattle-301n19/blob/master/class-06/demo/server/server.js) for the Error feature. 
 - Lab partner: Scott Falbo
+- Utilized the following APIs: Yelp API, MovieDB API, LocationIQ API, Hiking Project Data API, and Weatherbit API. 
