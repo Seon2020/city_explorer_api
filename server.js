@@ -9,9 +9,6 @@ const pg = require('pg');
 // Load environment variables from .env
 require('dotenv').config();
 
-//add postgres client 
-const client = new pg.Client(process.env.DATABASE_URL);
-
 // App setup 
 const PORT = process.env.PORT || 3000;
 
@@ -20,6 +17,9 @@ const app = express();
 
 // use CORS
 app.use(cors());
+
+//add postgres client 
+const client = new pg.Client(process.env.DATABASE_URL);
 
 //Location Route 
 app.get('/location', (request, response) => {
@@ -61,6 +61,49 @@ app.get('/location', (request, response) => {
       handleError(request, response, error);
 })})
 
+//Movie route
+app.get('/movies', (request, response) => {
+  let key = process.env.MOVIE_API_KEY;
+  let city = request.query.search_query;
+
+  const URL = `https://api.themoviedb.org/3/search/movie?api_key=${key}&language=en-US&query=${city}&page=1&include_adult=false`;
+
+  superagent.get(URL)
+    .then(data => {
+    // results is the array that contains standard movie list objects 
+      let movies = data.body.results.map(val => {
+        return new Movie(val);
+      });
+      response.status(200).send(movies);
+    })
+    .catch(error => {
+      handleError();
+    });
+})
+
+// Yelp route
+app.get('/yelp', (request, response) => {
+  let city = request.query.search_query;
+  const URL = 'https://api.yelp.com/v3/businesses/search';
+  const queryParams = {
+    term: 'restaurants',
+    location: city
+  };
+  superagent.get(URL)
+  .auth(process.env.YELP_API_KEY, {type: 'bearer'})
+  .query(queryParams)
+  .then(data => {
+    console.log(body.data);
+    let restaurants = data.body.businesses.map(results => {
+      new Restaurant(results);
+    });
+    response.status(200).send(restaurants);
+  })
+  .catch(error => {
+    handleError();
+  });
+})
+
 // Weather Route
 app.get('/weather', (request, response) => {
   let key = process.env.WEATHER_API_KEY;
@@ -101,27 +144,8 @@ app.get('/trails', (request, response) => {
     });
 })
 
-app.get('/movies', (request, response) => {
-  let key = process.env.MOVIE_API_KEY;
-  let city = request.query.search_query;
-
-  const URL = `https://api.themoviedb.org/3/movie?api_key=${key}&language=en-US&query=${city}`;
-
-  superagent.get(URL)
-    .then(data => {
-    // results is the array that contains standard movie list objects 
-      let movies = data.body.results.map(val => {
-        return new Movie(val);
-      });
-      response.status(200).send(movies);
-    })
-    .catch(error => {
-      handleError();
-    });
-})
-
 // Any route that is not /location will run the function
-app.use("*", noHandlerFound);
+// app.use("*", noHandlerFound);
 
 // Location Constructor 
 function Location(obj, query) {
@@ -129,6 +153,25 @@ function Location(obj, query) {
   this.longitude = obj.lon;
   this.search_query = query;
   this.formatted_query = obj.display_name;
+}
+
+// Movie Constructor 
+function Movie(obj) {
+  this.title = obj.original_title;
+  this.overview = obj.overview;
+  this.average_votes = obj.vote_average;
+  this.total_votes = obj.vote_count;
+  this.image_url = `https://image.tmdb.org/t/p/w500${obj.poster_path}`;
+  this.popularity = obj.popularity;
+  this.released_on = obj.release_date;
+}
+
+function Restaurant(obj) {
+  this.name = obj.name;
+  this.image_url = obj.image_url;
+  this.price = obj.price;
+  this.rating = obj.rating;
+  this.url = obj.url;
 }
 
 // Weather Constructor 
@@ -151,25 +194,14 @@ function Trail(obj) {
   this.condition_time = obj.conditionDate.slice(11,20);
 }
 
-// Movie Constructor 
-function Movie(obj) {
-  this.title = obj.title;
-  this.overview = obj.overview;
-  this.average_votes = obj.vote_average;
-  this.total_votes = obj.vote_count;
-  this.image_url = `https://image.tmdb.org/t/p/w500${obj.poster_path}`;
-  this.popularity = obj.popularity;
-  this.released_on = obj.release_date;
-}
-
 //Error function
 function handleError(req, res, error) {
   res.status(500).send("Sorry, something went wrong");
 };
 
-function noHandlerFound(req, res) {
-  res.status(404).send('Not Found');
-};
+// function noHandlerFound(req, res) {
+//   res.status(404).send('Not Found');
+// };
 
 // Connect to database and start server
 client.connect()
