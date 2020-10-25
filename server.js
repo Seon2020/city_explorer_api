@@ -9,7 +9,7 @@ const pg = require('pg');
 // Load environment variables from .env
 require('dotenv').config();
 
-// App setup 
+// Declare port
 const PORT = process.env.PORT || 3000;
 
 // Start express
@@ -77,30 +77,37 @@ app.get('/movies', (request, response) => {
       response.status(200).send(movies);
     })
     .catch(error => {
-      handleError();
+      handleError(request, response, error);
     });
 })
 
 // Yelp route
 app.get('/yelp', (request, response) => {
-  let city = request.query.search_query;
+  const numPerPage = 5;
+  let page = request.query.page || 1;
   const URL = 'https://api.yelp.com/v3/businesses/search';
+
   const queryParams = {
     term: 'restaurants',
-    location: city
+    latitude: request.query.latitude,
+    longitude: request.query.longitude,
+    limit: numPerPage, 
+    offset: ((page - 1) * numPerPage + 1)
   };
+
   superagent.get(URL)
   .auth(process.env.YELP_API_KEY, {type: 'bearer'})
   .query(queryParams)
   .then(data => {
-    console.log(body.data);
-    let restaurants = data.body.businesses.map(results => {
-      new Restaurant(results);
+    const results = data.body.businesses;
+    const output = [];
+    results.forEach(val => {
+      output.push(new Restaurant(val));
     });
-    response.status(200).send(restaurants);
+    response.status(200).send(output);
   })
   .catch(error => {
-    handleError();
+    handleError(request, response, error);
   });
 })
 
@@ -120,7 +127,7 @@ app.get('/weather', (request, response) => {
       response.status(200).send(weather);
     })
     .catch (error => {
-      handleError();
+      handleError(request, response, error);
     });
 })
 
@@ -140,12 +147,12 @@ app.get('/trails', (request, response) => {
       response.status(200).send(trail);
     })
     .catch(error => {
-      handleError();
+      handleError(request, response, error);
     });
 })
 
-// Any route that is not /location will run the function
-// app.use("*", noHandlerFound);
+// Any route that is not found
+app.use("*", noHandlerFound);
 
 // Location Constructor 
 function Location(obj, query) {
@@ -195,13 +202,13 @@ function Trail(obj) {
 }
 
 //Error function
-function handleError(req, res, error) {
+function handleError(request, response, error) {
   res.status(500).send("Sorry, something went wrong");
 };
 
-// function noHandlerFound(req, res) {
-//   res.status(404).send('Not Found');
-// };
+function noHandlerFound(request, response) {
+  res.status(404).send('Not Found');
+};
 
 // Connect to database and start server
 client.connect()
