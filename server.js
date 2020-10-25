@@ -101,6 +101,25 @@ app.get('/trails', (request, response) => {
     });
 })
 
+app.get('/movies', (request, response) => {
+  let key = process.env.MOVIE_API_KEY;
+  let city = request.query.search_query;
+
+  const URL = `https://api.themoviedb.org/3/movie?api_key=${key}&language=en-US&query=${city}`;
+
+  superagent.get(URL)
+    .then(data => {
+    // results is the array that contains standard movie list objects 
+      let movies = data.body.results.map(val => {
+        return new Movie(val);
+      });
+      response.status(200).send(movies);
+    })
+    .catch(error => {
+      handleError();
+    });
+})
+
 // Any route that is not /location will run the function
 app.use("*", noHandlerFound);
 
@@ -130,6 +149,17 @@ function Trail(obj) {
   this.conditions = obj.conditionStatus;
   this.condition_date = obj.conditionDate.slice(0,10);
   this.condition_time = obj.conditionDate.slice(11,20);
+}
+
+// Movie Constructor 
+function Movie(obj) {
+  this.title = obj.title;
+  this.overview = obj.overview;
+  this.average_votes = obj.vote_average;
+  this.total_votes = obj.vote_count;
+  this.image_url = `https://image.tmdb.org/t/p/w500${obj.poster_path}`;
+  this.popularity = obj.popularity;
+  this.released_on = obj.release_date;
 }
 
 //Error function
