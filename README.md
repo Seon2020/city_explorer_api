@@ -1,6 +1,6 @@
 # city_explorer_api
-City Explorer Back End
-**Author:** Sean Hawkins
+City Explorer Back End  
+**Author:** Sean Hawkins  
 **Version:** 1.0.0
 ## Overview
 This is the back-end for the City Explorer site. I am building it to provide visitors with data on many different locations around the world. It allows users to input a city name and receive several pieces of information: location, weather, and various hiking trails. 
